@@ -163,10 +163,11 @@ public class CheckmateDetector {
         } else return true;
     }
     
-//    /**
-//     * Checks if the white king is threatened
-//     * @return boolean representing whether the white king is in check.
-//     */
+    /**
+     * Checks if the white king is threatened
+     * @return boolean representing whether the white king is in check.
+     */
+
 //    public boolean whiteInCheck() {
 //        update();
 //        Square sq = wk.getPosition();
@@ -176,48 +177,76 @@ public class CheckmateDetector {
 //        } else return true;
 //    }
 
-    /**
-     * Checks whether black is in checkmate.
-     * @return boolean representing if black player is checkmated.
-     */
-    public boolean blackCheckMated() {
+//    /**
+//     * Checks whether black is in checkmate.
+//     * @return boolean representing if black player is checkmated.
+//     */
+//    public boolean blackCheckMated() {
+//        boolean checkmate = true;
+//        // Check if black is in check
+//        if (!this.isInCheck("b")) return false;
+//
+//        // If yes, check if king can evade
+//        if (canEvade(wMoves, bk)) checkmate = false;
+//
+//        // If no, check if threat can be captured
+//        List<Piece> threats = wMoves.get(bk.getPosition());
+//        if (canCapture(bMoves, threats, bk)) checkmate = false;
+//
+//        // If no, check if threat can be blocked
+//        if (canBlock(threats, bMoves, bk)) checkmate = false;
+//
+//        // If no possible ways of removing check, checkmate occurred
+//        return checkmate;
+//    }
+//
+//    /**
+//     * Checks whether white is in checkmate.
+//     * @return boolean representing if white player is checkmated.
+////     */
+//    public boolean whiteCheckMated() {
+//        boolean checkmate = true;
+//        // Check if white is in check
+//        if (!this.isInCheck("w")) return false;
+//
+//        // If yes, check if king can evade
+//        if (canEvade(bMoves, wk)) checkmate = false;
+//
+//        // If no, check if threat can be captured
+//        List<Piece> threats = bMoves.get(wk.getPosition());
+//        if (canCapture(wMoves, threats, wk)) checkmate = false;
+//
+//        // If no, check if threat can be blocked
+//        if (canBlock(threats, wMoves, wk)) checkmate = false;
+//
+//        // If no possible ways of removing check, checkmate occurred
+//        return checkmate;
+//    }
+//
+
+    public boolen colorCheckMated(String color){
         boolean checkmate = true;
-        // Check if black is in check
-        if (!this.isInCheck("b")) return false;
-        
+        if (color.equals("w")){
+            HashMap<Square,List<Piece>>  opositeMoves=bMoves;
+            HashMap<Square,List<Piece>>  colorMoves=wMoves;
+            King k =wk;
+        }
+        else  (color.equals("b")){
+            HashMap<Square,List<Piece>> opositeMoves=wMoves;
+            HashMap<Square,List<Piece>>  colorMoves=bMoves;
+            King k = bk;
+        }
+
         // If yes, check if king can evade
-        if (canEvade(wMoves, bk)) checkmate = false;
-        
+        if (canEvade(opositeMoves, k)) checkmate = false;
+
         // If no, check if threat can be captured
-        List<Piece> threats = wMoves.get(bk.getPosition());
-        if (canCapture(bMoves, threats, bk)) checkmate = false;
-        
+        List<Piece> threats = opositeMoves.get(k.getPosition());
+        if (canCapture(colorMoves, threats, k)) checkmate = false;
+
         // If no, check if threat can be blocked
-        if (canBlock(threats, bMoves, bk)) checkmate = false;
-        
-        // If no possible ways of removing check, checkmate occurred
-        return checkmate;
-    }
-    
-    /**
-     * Checks whether white is in checkmate.
-     * @return boolean representing if white player is checkmated.
-     */
-    public boolean whiteCheckMated() {
-        boolean checkmate = true;
-        // Check if white is in check
-        if (!this.isInCheck("w")) return false;
-        
-        // If yes, check if king can evade
-        if (canEvade(bMoves, wk)) checkmate = false;
-        
-        // If no, check if threat can be captured
-        List<Piece> threats = bMoves.get(wk.getPosition());
-        if (canCapture(wMoves, threats, wk)) checkmate = false;
-        
-        // If no, check if threat can be blocked
-        if (canBlock(threats, wMoves, wk)) checkmate = false;
-        
+        if (canBlock(threats, colorMoves, wk)) checkmate = false;
+
         // If no possible ways of removing check, checkmate occurred
         return checkmate;
     }
@@ -447,9 +476,9 @@ public class CheckmateDetector {
     public List<Square> getAllowableSquares(boolean b) {
         movableSquares.removeAll(movableSquares);
         if (isInCheck("w")) {
-            whiteCheckMated();
+            colorCheckMated("w");
         } else if (isInCheck("b")) {
-            blackCheckMated();
+            colorCheckMated("b");
         }
         return movableSquares;
     }
