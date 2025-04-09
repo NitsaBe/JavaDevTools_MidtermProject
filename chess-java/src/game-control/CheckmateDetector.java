@@ -161,7 +161,7 @@ public class CheckmateDetector {
     public boolean blackCheckMated() {
         boolean checkmate = true;
         // Check if black is in check
-        if (!this.blackInCheck()) return false;
+        if (!this.isInCheck("b")) return false;
         
         // If yes, check if king can evade
         if (canEvade(wMoves, bk)) checkmate = false;
@@ -184,7 +184,7 @@ public class CheckmateDetector {
     public boolean whiteCheckMated() {
         boolean checkmate = true;
         // Check if white is in check
-        if (!this.whiteInCheck()) return false;
+        if (!this.isInCheck("w")) return false;
         
         // If yes, check if king can evade
         if (canEvade(bMoves, wk)) checkmate = false;
@@ -424,9 +424,9 @@ public class CheckmateDetector {
      */
     public List<Square> getAllowableSquares(boolean b) {
         movableSquares.removeAll(movableSquares);
-        if (whiteInCheck()) {
+        if (isInCheck("w")) {
             whiteCheckMated();
-        } else if (blackInCheck()) {
+        } else if (isInCheck("b")) {
             blackCheckMated();
         }
         return movableSquares;
@@ -448,8 +448,8 @@ public class CheckmateDetector {
         p.move(sq);
         update();
         
-        if (p.getColor() == 0 && blackInCheck()) movetest = false;
-        else if (p.getColor() == 1 && whiteInCheck()) movetest = false;
+        if (p.getColor() == 0 && isInCheck("b")) movetest = false;
+        else if (p.getColor() == 1 && isInCheck("w")) movetest = false;
         
         p.move(init);
         if (c != null) sq.put(c);
