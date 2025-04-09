@@ -84,33 +84,55 @@ public class CheckmateDetector {
         movableSquares.removeAll(movableSquares);
         
         // Add each move white and black can make to map
-        while (wIter.hasNext()) {
-            Piece p = wIter.next();
+        addEachMoveOnMap(wIter);
+        addEachMoveOnMap(bIter);
+
+//while (wIter.hasNext()) {
+//            Piece p = wIter.next();
+//
+//            if (!p.getClass().equals(King.class)) {
+//                if (p.getPosition() == null) {
+//                    wIter.remove();
+//                    continue;
+//                }
+//
+//                List<Square> mvs = p.getLegalMoves(b);
+//                Iterator<Square> iter = mvs.iterator();
+//                while (iter.hasNext()) {
+//                    List<Piece> pieces = wMoves.get(iter.next());
+//                    pieces.add(p);
+//                }
+//            }
+//        }
+//while (bIter.hasNext()) {
+//            Piece p = bIter.next();
+//
+//            if (!p.getClass().equals(King.class)) {
+//                if (p.getPosition() == null) {
+//                    bIter.remove();
+//                    continue;
+//                }
+//
+//                List<Square> mvs = p.getLegalMoves(b);
+//                Iterator<Square> iter = mvs.iterator();
+//                while (iter.hasNext()) {
+//                    List<Piece> pieces = bMoves.get(iter.next());
+//                    pieces.add(p);
+//                }
+//            }
+//        }
+    }
+
+    public void addEachMoveOnMap(Iterator<Piece> colorIter){
+        while (colorIter.hasNext()) {
+            Piece p = colorIter.next();
 
             if (!p.getClass().equals(King.class)) {
                 if (p.getPosition() == null) {
-                    wIter.remove();
+                    colorIter.remove();
                     continue;
                 }
 
-                List<Square> mvs = p.getLegalMoves(b);
-                Iterator<Square> iter = mvs.iterator();
-                while (iter.hasNext()) {
-                    List<Piece> pieces = wMoves.get(iter.next());
-                    pieces.add(p);
-                }
-            }
-        }
-        
-        while (bIter.hasNext()) {
-            Piece p = bIter.next();
-            
-            if (!p.getClass().equals(King.class)) {
-                if (p.getPosition() == null) {
-                    wIter.remove();
-                    continue;
-                }
-                
                 List<Square> mvs = p.getLegalMoves(b);
                 Iterator<Square> iter = mvs.iterator();
                 while (iter.hasNext()) {
