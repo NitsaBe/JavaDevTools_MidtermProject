@@ -73,11 +73,11 @@ public class CheckmateDetector {
         Iterator<Piece> bIter = bPieces.iterator();
         
         // empty moves and movable squares at each update
-        for (List<Piece> pieces : wMoves.values()) {
-            pieces.removeAll(pieces);
-        }
-        
-        for (List<Piece> pieces : bMoves.values()) {
+//        for (List<Piece> pieces : wMoves.values()) {
+//            pieces.removeAll(pieces);
+//        }
+//
+        for (List<Piece> pieces : bMoves.values() , wMoves.values()) {
             pieces.removeAll(pieces);
         }
         
@@ -122,31 +122,38 @@ public class CheckmateDetector {
     }
     
     /**
-     * Checks if the black king is threatened
+     * Checks if the king is threatened ( specified color "w" or "b" )
      * @return boolean representing whether the black king is in check.
      */
-    public boolean blackInCheck() {
+    public boolean isInCheck(String color) {
         update();
-        Square sq = bk.getPosition();
+        if (color.equals("w")){
+            Square sq = wk.getPosition();
+        }
+        else if (color.equals("b")){
+            Square bq = wk.getPosition();
+
+        }
+
         if (wMoves.get(sq).isEmpty()) {
             movableSquares.addAll(squares);
             return false;
         } else return true;
     }
     
-    /**
-     * Checks if the white king is threatened
-     * @return boolean representing whether the white king is in check.
-     */
-    public boolean whiteInCheck() {
-        update();
-        Square sq = wk.getPosition();
-        if (bMoves.get(sq).isEmpty()) {
-            movableSquares.addAll(squares);
-            return false;
-        } else return true;
-    }
-    
+//    /**
+//     * Checks if the white king is threatened
+//     * @return boolean representing whether the white king is in check.
+//     */
+//    public boolean whiteInCheck() {
+//        update();
+//        Square sq = wk.getPosition();
+//        if (bMoves.get(sq).isEmpty()) {
+//            movableSquares.addAll(squares);
+//            return false;
+//        } else return true;
+//    }
+
     /**
      * Checks whether black is in checkmate.
      * @return boolean representing if black player is checkmated.
