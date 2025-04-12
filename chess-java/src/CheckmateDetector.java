@@ -123,7 +123,7 @@ public class CheckmateDetector {
      * @return boolean representing whether the said king is in check.
      */
 
-    public Boolean isInCheck(String color) {
+    public boolean isInCheck(String color) {
         update();
         Square sq =null;
         if (color.equals("w")){
@@ -318,7 +318,8 @@ public class CheckmateDetector {
                     startX = tX - 1;
                     endX = kX;
                     step = -1;
-                } else {
+                }
+                else {
                     startX = tX + 1;
                     endX = kX;
                     step = 1;
