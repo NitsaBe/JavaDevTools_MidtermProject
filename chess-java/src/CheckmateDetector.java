@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Component of the Chess game that detects check mates in the game.
- * 
+ *
  * @author Jussi Lundstedt
  *
  */
@@ -24,33 +24,33 @@ public class CheckmateDetector {
     private King wk;
     private HashMap<Square,List<Piece>> wMoves;
     private HashMap<Square,List<Piece>> bMoves;
-    
+
     /**
      * Constructs a new instance of CheckmateDetector on a given board. By
      * convention should be called when the board is in its initial state.
-     * 
+     *
      * @param b The board which the detector monitors
      * @param wPieces White pieces on the board.
      * @param bPieces Black pieces on the board.
      * @param wk Piece object representing the white king
      * @param bk Piece object representing the black king
      */
-    public CheckmateDetector(Board b, LinkedList<Piece> wPieces, 
-            LinkedList<Piece> bPieces, King wk, King bk) {
+    public CheckmateDetector(Board b, LinkedList<Piece> wPieces,
+                             LinkedList<Piece> bPieces, King wk, King bk) {
         this.b = b;
         this.wPieces = wPieces;
         this.bPieces = bPieces;
         this.bk = bk;
         this.wk = wk;
-        
+
         // Initialize other fields
         squares = new LinkedList<Square>();
         movableSquares = new LinkedList<Square>();
         wMoves = new HashMap<Square,List<Piece>>();
         bMoves = new HashMap<Square,List<Piece>>();
-        
+
         Square[][] brd = b.getSquareArray();
-        
+
         // add all squares to squares list and as hashmap keys
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -59,11 +59,11 @@ public class CheckmateDetector {
                 bMoves.put(brd[y][x], new LinkedList<Piece>());
             }
         }
-        
+
         // update situation
         update();
     }
-    
+
     /**
      * Updates the object with the current situation of the game.
      */
@@ -71,65 +71,43 @@ public class CheckmateDetector {
         // Iterators through pieces
         Iterator<Piece> wIter = wPieces.iterator();
         Iterator<Piece> bIter = bPieces.iterator();
-        
+
         // empty moves and movable squares at each update
-//        for (List<Piece> pieces : wMoves.values()) {
-//            pieces.removeAll(pieces);
-//        }
-//
-        for (List<Piece> pieces : bMoves.values() , wMoves.values()) {
+        for (List<Piece> pieces : wMoves.values()) {
             pieces.removeAll(pieces);
         }
-        
+
+        for (List<Piece> pieces : bMoves.values()) {
+            pieces.removeAll(pieces);
+        }
+
         movableSquares.removeAll(movableSquares);
-        
+
         // Add each move white and black can make to map
-        addEachMoveOnMap(wIter);
-        addEachMoveOnMap(bIter);
-
-//while (wIter.hasNext()) {
-//            Piece p = wIter.next();
-//
-//            if (!p.getClass().equals(King.class)) {
-//                if (p.getPosition() == null) {
-//                    wIter.remove();
-//                    continue;
-//                }
-//
-//                List<Square> mvs = p.getLegalMoves(b);
-//                Iterator<Square> iter = mvs.iterator();
-//                while (iter.hasNext()) {
-//                    List<Piece> pieces = wMoves.get(iter.next());
-//                    pieces.add(p);
-//                }
-//            }
-//        }
-//while (bIter.hasNext()) {
-//            Piece p = bIter.next();
-//
-//            if (!p.getClass().equals(King.class)) {
-//                if (p.getPosition() == null) {
-//                    bIter.remove();
-//                    continue;
-//                }
-//
-//                List<Square> mvs = p.getLegalMoves(b);
-//                Iterator<Square> iter = mvs.iterator();
-//                while (iter.hasNext()) {
-//                    List<Piece> pieces = bMoves.get(iter.next());
-//                    pieces.add(p);
-//                }
-//            }
-//        }
-    }
-
-    public void addEachMoveOnMap(Iterator<Piece> colorIter){
-        while (colorIter.hasNext()) {
-            Piece p = colorIter.next();
+        while (wIter.hasNext()) {
+            Piece p = wIter.next();
 
             if (!p.getClass().equals(King.class)) {
                 if (p.getPosition() == null) {
-                    colorIter.remove();
+                    wIter.remove();
+                    continue;
+                }
+
+                List<Square> mvs = p.getLegalMoves(b);
+                Iterator<Square> iter = mvs.iterator();
+                while (iter.hasNext()) {
+                    List<Piece> pieces = wMoves.get(iter.next());
+                    pieces.add(p);
+                }
+            }
+        }
+
+        while (bIter.hasNext()) {
+            Piece p = bIter.next();
+
+            if (!p.getClass().equals(King.class)) {
+                if (p.getPosition() == null) {
+                    wIter.remove();
                     continue;
                 }
 
@@ -142,32 +120,24 @@ public class CheckmateDetector {
             }
         }
     }
-    
+
     /**
-     * Checks if the king is threatened ( specified color "w" or "b" )
+     * Checks if the black king is threatened
      * @return boolean representing whether the black king is in check.
      */
-    public boolean isInCheck(String color) {
-        update();
-        if (color.equals("w")){
-            Square sq = wk.getPosition();
-        }
-        else if (color.equals("b")){
-            Square bq = wk.getPosition();
+//    public boolean blackInCheck() {
+//        update();
+//        Square sq = bk.getPosition();
+//        if (wMoves.get(sq).isEmpty()) {
+//            movableSquares.addAll(squares);
+//            return false;
+//        } else return true;
+//    }
 
-        }
-
-        if (wMoves.get(sq).isEmpty()) {
-            movableSquares.addAll(squares);
-            return false;
-        } else return true;
-    }
-    
     /**
      * Checks if the white king is threatened
      * @return boolean representing whether the white king is in check.
      */
-
 //    public boolean whiteInCheck() {
 //        update();
 //        Square sq = wk.getPosition();
@@ -177,10 +147,34 @@ public class CheckmateDetector {
 //        } else return true;
 //    }
 
-//    /**
-//     * Checks whether black is in checkmate.
-//     * @return boolean representing if black player is checkmated.
-//     */
+
+//    ///////////
+    public Boolean isInCheck(String color) {
+        update();
+        Square sq =null;
+        if (color.equals("w")){
+            sq=wk.getPosition();
+            if (bMoves.get(sq).isEmpty()) {
+                movableSquares.addAll(squares);
+                return false;
+            }
+
+        }
+        else if (color.equals("b")){
+            sq = bk.getPosition();
+            if (wMoves.get(sq).isEmpty()) {
+                movableSquares.addAll(squares);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Checks whether black is in checkmate.
+     * @return boolean representing if black player is checkmated.
+     */
 //    public boolean blackCheckMated() {
 //        boolean checkmate = true;
 //        // Check if black is in check
@@ -203,7 +197,7 @@ public class CheckmateDetector {
 //    /**
 //     * Checks whether white is in checkmate.
 //     * @return boolean representing if white player is checkmated.
-////     */
+//     */
 //    public boolean whiteCheckMated() {
 //        boolean checkmate = true;
 //        // Check if white is in check
@@ -222,19 +216,27 @@ public class CheckmateDetector {
 //        // If no possible ways of removing check, checkmate occurred
 //        return checkmate;
 //    }
-//
 
-    public boolen colorCheckMated(String color){
+
+
+    public Boolean colorCheckMated(String color){
+
         boolean checkmate = true;
+        King k =null;
+        HashMap<Square,List<Piece>>  opositeMoves=null;
+        HashMap<Square,List<Piece>>  colorMoves=null;
+
         if (color.equals("w")){
-            HashMap<Square,List<Piece>>  opositeMoves=bMoves;
-            HashMap<Square,List<Piece>>  colorMoves=wMoves;
-            King k =wk;
+            if (!this.isInCheck("w")) return false;
+             opositeMoves=bMoves;
+             colorMoves=wMoves;
+             k =wk;
         }
-        else  (color.equals("b")){
-            HashMap<Square,List<Piece>> opositeMoves=wMoves;
-            HashMap<Square,List<Piece>>  colorMoves=bMoves;
-            King k = bk;
+        else if (color.equals("b")){
+            if (!this.isInCheck("b")) return false;
+             opositeMoves=wMoves;
+             colorMoves=bMoves;
+             k = bk;
         }
 
         // If yes, check if king can evade
@@ -250,7 +252,11 @@ public class CheckmateDetector {
         // If no possible ways of removing check, checkmate occurred
         return checkmate;
     }
-    
+
+
+
+
+
     /*
      * Helper method to determine if the king can evade the check.
      * Gives a false positive if the king can capture the checking piece.
@@ -259,7 +265,7 @@ public class CheckmateDetector {
         boolean evade = false;
         List<Square> kingsMoves = tKing.getLegalMoves(b);
         Iterator<Square> iterator = kingsMoves.iterator();
-        
+
         // If king is not threatened at some square, it can evade
         while (iterator.hasNext()) {
             Square sq = iterator.next();
@@ -269,31 +275,31 @@ public class CheckmateDetector {
                 evade = true;
             }
         }
-        
+
         return evade;
     }
-    
+
     /*
      * Helper method to determine if the threatening piece can be captured.
      */
-    private boolean canCapture(Map<Square,List<Piece>> poss, 
-            List<Piece> threats, King k) {
-        
+    private boolean canCapture(Map<Square,List<Piece>> poss,
+                               List<Piece> threats, King k) {
+
         boolean capture = false;
         if (threats.size() == 1) {
             Square sq = threats.get(0).getPosition();
-            
+
             if (k.getLegalMoves(b).contains(sq)) {
                 movableSquares.add(sq);
                 if (testMove(k, sq)) {
                     capture = true;
                 }
             }
-            
+
             List<Piece> caps = poss.get(sq);
             ConcurrentLinkedDeque<Piece> capturers = new ConcurrentLinkedDeque<Piece>();
             capturers.addAll(caps);
-            
+
             if (!capturers.isEmpty()) {
                 movableSquares.add(sq);
                 for (Piece p : capturers) {
@@ -303,91 +309,91 @@ public class CheckmateDetector {
                 }
             }
         }
-        
+
         return capture;
     }
-    
+
     /*
      * Helper method to determine if check can be blocked by a piece.
      */
-    private boolean canBlock(List<Piece> threats, 
-            Map <Square,List<Piece>> blockMoves, King k) {
+    private boolean canBlock(List<Piece> threats,
+                             Map <Square,List<Piece>> blockMoves, King k) {
         boolean blockable = false;
-        
+
         if (threats.size() == 1) {
             Square ts = threats.get(0).getPosition();
             Square ks = k.getPosition();
             Square[][] brdArray = b.getSquareArray();
-            
+
             if (ks.getXNum() == ts.getXNum()) {
                 int max = Math.max(ks.getYNum(), ts.getYNum());
                 int min = Math.min(ks.getYNum(), ts.getYNum());
-                
+
                 for (int i = min + 1; i < max; i++) {
-                    List<Piece> blks = 
+                    List<Piece> blks =
                             blockMoves.get(brdArray[i][ks.getXNum()]);
-                    ConcurrentLinkedDeque<Piece> blockers = 
+                    ConcurrentLinkedDeque<Piece> blockers =
                             new ConcurrentLinkedDeque<Piece>();
                     blockers.addAll(blks);
-                    
+
                     if (!blockers.isEmpty()) {
                         movableSquares.add(brdArray[i][ks.getXNum()]);
-                        
+
                         for (Piece p : blockers) {
                             if (testMove(p,brdArray[i][ks.getXNum()])) {
                                 blockable = true;
                             }
                         }
-                        
+
                     }
                 }
             }
-            
+
             if (ks.getYNum() == ts.getYNum()) {
                 int max = Math.max(ks.getXNum(), ts.getXNum());
                 int min = Math.min(ks.getXNum(), ts.getXNum());
-                
+
                 for (int i = min + 1; i < max; i++) {
-                    List<Piece> blks = 
+                    List<Piece> blks =
                             blockMoves.get(brdArray[ks.getYNum()][i]);
-                    ConcurrentLinkedDeque<Piece> blockers = 
+                    ConcurrentLinkedDeque<Piece> blockers =
                             new ConcurrentLinkedDeque<Piece>();
                     blockers.addAll(blks);
-                    
+
                     if (!blockers.isEmpty()) {
-                        
+
                         movableSquares.add(brdArray[ks.getYNum()][i]);
-                        
+
                         for (Piece p : blockers) {
                             if (testMove(p, brdArray[ks.getYNum()][i])) {
                                 blockable = true;
                             }
                         }
-                        
+
                     }
                 }
             }
-            
+
             Class<? extends Piece> tC = threats.get(0).getClass();
-            
+
             if (tC.equals(Queen.class) || tC.equals(Bishop.class)) {
                 int kX = ks.getXNum();
                 int kY = ks.getYNum();
                 int tX = ts.getXNum();
                 int tY = ts.getYNum();
-                
+
                 if (kX > tX && kY > tY) {
                     for (int i = tX + 1; i < kX; i++) {
                         tY++;
-                        List<Piece> blks = 
+                        List<Piece> blks =
                                 blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
+                        ConcurrentLinkedDeque<Piece> blockers =
                                 new ConcurrentLinkedDeque<Piece>();
                         blockers.addAll(blks);
-                        
+
                         if (!blockers.isEmpty()) {
                             movableSquares.add(brdArray[tY][i]);
-                            
+
                             for (Piece p : blockers) {
                                 if (testMove(p, brdArray[tY][i])) {
                                     blockable = true;
@@ -396,19 +402,19 @@ public class CheckmateDetector {
                         }
                     }
                 }
-                
+
                 if (kX > tX && tY > kY) {
                     for (int i = tX + 1; i < kX; i++) {
                         tY--;
-                        List<Piece> blks = 
+                        List<Piece> blks =
                                 blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
+                        ConcurrentLinkedDeque<Piece> blockers =
                                 new ConcurrentLinkedDeque<Piece>();
                         blockers.addAll(blks);
-                        
+
                         if (!blockers.isEmpty()) {
                             movableSquares.add(brdArray[tY][i]);
-                            
+
                             for (Piece p : blockers) {
                                 if (testMove(p, brdArray[tY][i])) {
                                     blockable = true;
@@ -417,19 +423,19 @@ public class CheckmateDetector {
                         }
                     }
                 }
-                
+
                 if (tX > kX && kY > tY) {
                     for (int i = tX - 1; i > kX; i--) {
                         tY++;
-                        List<Piece> blks = 
+                        List<Piece> blks =
                                 blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
+                        ConcurrentLinkedDeque<Piece> blockers =
                                 new ConcurrentLinkedDeque<Piece>();
                         blockers.addAll(blks);
-                        
+
                         if (!blockers.isEmpty()) {
                             movableSquares.add(brdArray[tY][i]);
-                            
+
                             for (Piece p : blockers) {
                                 if (testMove(p, brdArray[tY][i])) {
                                     blockable = true;
@@ -438,19 +444,19 @@ public class CheckmateDetector {
                         }
                     }
                 }
-                
+
                 if (tX > kX && tY > kY) {
                     for (int i = tX - 1; i > kX; i--) {
                         tY--;
-                        List<Piece> blks = 
+                        List<Piece> blks =
                                 blockMoves.get(brdArray[tY][i]);
-                        ConcurrentLinkedDeque<Piece> blockers = 
+                        ConcurrentLinkedDeque<Piece> blockers =
                                 new ConcurrentLinkedDeque<Piece>();
                         blockers.addAll(blks);
-                        
+
                         if (!blockers.isEmpty()) {
                             movableSquares.add(brdArray[tY][i]);
-                            
+
                             for (Piece p : blockers) {
                                 if (testMove(p, brdArray[tY][i])) {
                                     blockable = true;
@@ -461,10 +467,10 @@ public class CheckmateDetector {
                 }
             }
         }
-        
+
         return blockable;
     }
-    
+
     /**
      * Method to get a list of allowable squares that the player can move.
      * Defaults to all squares, but limits available squares if player is in
@@ -482,7 +488,7 @@ public class CheckmateDetector {
         }
         return movableSquares;
     }
-    
+
     /**
      * Tests a move a player is about to make to prevent making an illegal move
      * that puts the player in check.
@@ -492,21 +498,21 @@ public class CheckmateDetector {
      */
     public boolean testMove(Piece p, Square sq) {
         Piece c = sq.getOccupyingPiece();
-        
+
         boolean movetest = true;
         Square init = p.getPosition();
-        
+
         p.move(sq);
         update();
-        
+
         if (p.getColor() == 0 && isInCheck("b")) movetest = false;
         else if (p.getColor() == 1 && isInCheck("w")) movetest = false;
-        
+
         p.move(init);
         if (c != null) sq.put(c);
-        
+
         update();
-        
+
         movableSquares.addAll(squares);
         return movetest;
     }

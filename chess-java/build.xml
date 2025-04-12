@@ -1,22 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project default="create_run_jar" name="chess-java">
-    <!--this file was created by Eclipse Runnable JAR file Export Wizard-->
-    <!--ANT 1.7 is required-->
-    <!--define folder properties-->
-    <property name="dir.buildfile" value="."/>
-    <property name="dir.workspace" value="${dir.buildfile}/.."/>
-    <property name="dir.jarfile" value="${dir.buildfile}"/>
-    <target name="create_run_jar">
+    <property name="dir.src" value="src"/>
+    <property name="dir.resources" value="resources"/>
+    <property name="dir.jarfile" value="."/>
+
+    <!-- First compile Java files -->
+    <target name="compile">
+        <mkdir dir="bin"/>
+        <javac srcdir="${dir.src}" destdir="bin" includeantruntime="false"/>
+    </target>
+
+    <!-- Then build the JAR -->
+    <target name="create_run_jar" depends="compile">
         <jar destfile="${dir.jarfile}/chess-java.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-                <attribute name="Rsrc-Main-Class" value="Game"/>
+                <attribute name="Rsrc-Main-Class" value="Game"/> <!-- Change if your main class has a package -->
                 <attribute name="Class-Path" value="."/>
                 <attribute name="Rsrc-Class-Path" value="./"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
-            <fileset dir="${dir.jarfile}/bin"/>
-            <fileset dir="${dir.jarfile}/resources"/>
+            <fileset dir="bin"/> <!-- Compiled classes -->
+            <fileset dir="${dir.resources}"/> <!-- Images/configs -->
         </jar>
+    </target>
+
+    <!-- Clean build files -->
+    <target name="clean">
+        <delete dir="bin"/>
+        <delete file="chess-java.jar"/>
     </target>
 </project>
