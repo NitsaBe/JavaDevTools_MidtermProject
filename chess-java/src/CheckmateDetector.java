@@ -84,71 +84,45 @@ public class CheckmateDetector {
         movableSquares.removeAll(movableSquares);
 
         // Add each move white and black can make to map
-        while (wIter.hasNext()) {
-            Piece p = wIter.next();
+
+        addEachMoveOnMap(wIter,"w");
+        addEachMoveOnMap(bIter,"b");
+    }
+
+    public void addEachMoveOnMap(Iterator<Piece> colorIter , String color){
+        while (colorIter.hasNext()) {
+            Piece p = colorIter.next();
 
             if (!p.getClass().equals(King.class)) {
                 if (p.getPosition() == null) {
-                    wIter.remove();
+                    colorIter.remove();
                     continue;
                 }
 
                 List<Square> mvs = p.getLegalMoves(b);
                 Iterator<Square> iter = mvs.iterator();
-                while (iter.hasNext()) {
-                    List<Piece> pieces = wMoves.get(iter.next());
-                    pieces.add(p);
+                if (color.equals("w")){
+                    while (iter.hasNext()) {
+                        List<Piece> pieces = wMoves.get(iter.next());
+                        pieces.add(p);
+                    }
                 }
-            }
-        }
-
-        while (bIter.hasNext()) {
-            Piece p = bIter.next();
-
-            if (!p.getClass().equals(King.class)) {
-                if (p.getPosition() == null) {
-                    wIter.remove();
-                    continue;
+                else if (color.equals("b")){
+                    while (iter.hasNext()) {
+                        List<Piece> pieces = bMoves.get(iter.next());
+                        pieces.add(p);
+                    }
                 }
 
-                List<Square> mvs = p.getLegalMoves(b);
-                Iterator<Square> iter = mvs.iterator();
-                while (iter.hasNext()) {
-                    List<Piece> pieces = bMoves.get(iter.next());
-                    pieces.add(p);
-                }
             }
         }
     }
 
     /**
-     * Checks if the black king is threatened
-     * @return boolean representing whether the black king is in check.
+     * Checks if the color king is threatened
+     * @return boolean representing whether the said king is in check.
      */
-//    public boolean blackInCheck() {
-//        update();
-//        Square sq = bk.getPosition();
-//        if (wMoves.get(sq).isEmpty()) {
-//            movableSquares.addAll(squares);
-//            return false;
-//        } else return true;
-//    }
 
-    /**
-     * Checks if the white king is threatened
-     * @return boolean representing whether the white king is in check.
-     */
-//    public boolean whiteInCheck() {
-//        update();
-//        Square sq = wk.getPosition();
-//        if (bMoves.get(sq).isEmpty()) {
-//            movableSquares.addAll(squares);
-//            return false;
-//        } else return true;
-//    }
-
-
-//    ///////////
     public Boolean isInCheck(String color) {
         update();
         Square sq =null;
@@ -175,49 +149,6 @@ public class CheckmateDetector {
      * Checks whether black is in checkmate.
      * @return boolean representing if black player is checkmated.
      */
-//    public boolean blackCheckMated() {
-//        boolean checkmate = true;
-//        // Check if black is in check
-//        if (!this.isInCheck("b")) return false;
-//
-//        // If yes, check if king can evade
-//        if (canEvade(wMoves, bk)) checkmate = false;
-//
-//        // If no, check if threat can be captured
-//        List<Piece> threats = wMoves.get(bk.getPosition());
-//        if (canCapture(bMoves, threats, bk)) checkmate = false;
-//
-//        // If no, check if threat can be blocked
-//        if (canBlock(threats, bMoves, bk)) checkmate = false;
-//
-//        // If no possible ways of removing check, checkmate occurred
-//        return checkmate;
-//    }
-//
-//    /**
-//     * Checks whether white is in checkmate.
-//     * @return boolean representing if white player is checkmated.
-//     */
-//    public boolean whiteCheckMated() {
-//        boolean checkmate = true;
-//        // Check if white is in check
-//        if (!this.isInCheck("w")) return false;
-//
-//        // If yes, check if king can evade
-//        if (canEvade(bMoves, wk)) checkmate = false;
-//
-//        // If no, check if threat can be captured
-//        List<Piece> threats = bMoves.get(wk.getPosition());
-//        if (canCapture(wMoves, threats, wk)) checkmate = false;
-//
-//        // If no, check if threat can be blocked
-//        if (canBlock(threats, wMoves, wk)) checkmate = false;
-//
-//        // If no possible ways of removing check, checkmate occurred
-//        return checkmate;
-//    }
-
-
 
     public Boolean colorCheckMated(String color){
 
@@ -228,15 +159,15 @@ public class CheckmateDetector {
 
         if (color.equals("w")){
             if (!this.isInCheck("w")) return false;
-             opositeMoves=bMoves;
-             colorMoves=wMoves;
-             k =wk;
+            opositeMoves=bMoves;
+            colorMoves=wMoves;
+            k =wk;
         }
         else if (color.equals("b")){
             if (!this.isInCheck("b")) return false;
-             opositeMoves=wMoves;
-             colorMoves=bMoves;
-             k = bk;
+            opositeMoves=wMoves;
+            colorMoves=bMoves;
+            k = bk;
         }
 
         // If yes, check if king can evade
