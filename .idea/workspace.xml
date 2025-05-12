@@ -5,12 +5,66 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c9c11dd4-5947-4375-90e1-acf450e295d8" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/JavaDevTools_MidtermProject.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/build.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/jar-in-jar-loader.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bbishop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bking.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bknight.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bpawn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/bqueen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/br.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/brook.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wb.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wbishop.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wk.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wking.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wknight.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wp.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wpawn.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wq.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wqueen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wr.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/resources/wrook.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Bishop.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Board.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/CheckmateDetector.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Clock.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Game.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/GameWindow.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/King.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Knight.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Pawn.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Piece.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Queen.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Rook.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/Square.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/chess-java/src/StartMenu.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -30,10 +84,12 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.Game.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;workingOnFiguines/Piece&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/User/Desktop/JavaProch/JavaDevTools_MidtermProject&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
 }</component>
@@ -41,6 +97,19 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\User\Desktop\JavaProch\JavaDevTools_MidtermProject\chess-java\src" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="JavaDevTools_MidtermProject" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="JavaDevTools_MidtermProject" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -52,5 +121,16 @@
       <updated>1743752497030</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
