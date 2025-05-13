@@ -6,7 +6,36 @@
     <property name="dir.buildfile" value="."/>
     <property name="dir.workspace" value="${dir.buildfile}/.."/>
     <property name="dir.jarfile" value="${dir.buildfile}"/>
-    <target name="create_run_jar">
+    <property name="dir.src" value="${dir.buildfile}/src"/>
+    <property name="dir.bin" value="${dir.buildfile}/bin"/>
+    <property name="dir.test" value="${dir.buildfile}/test"/>
+    <property name="dir.test.lib" value="${dir.test}/lib"/>
+    
+    <!-- Create target to compile source files -->
+    <target name="compile_src">
+        <mkdir dir="${dir.bin}"/>
+        <javac srcdir="${dir.src}" destdir="${dir.bin}" includeantruntime="false"/>
+    </target>
+    
+    <!-- Create target to compile test files (requires JUnit) -->
+    <target name="compile_tests" depends="compile_src" if="junit.available">
+        <mkdir dir="${dir.bin}"/>
+        <javac srcdir="${dir.test}" destdir="${dir.bin}" includeantruntime="false">
+            <classpath>
+                <fileset dir="${dir.test.lib}" includes="**/*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+    
+    <!-- Check if JUnit is available -->
+    <target name="check_junit">
+        <condition property="junit.available">
+            <available file="${dir.test.lib}/junit-4.13.2.jar"/>
+        </condition>
+    </target>
+    
+    <!-- Create executable JAR -->
+    <target name="create_run_jar" depends="compile_src">
         <jar destfile="${dir.jarfile}/chess-java.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
@@ -15,8 +44,32 @@
                 <attribute name="Rsrc-Class-Path" value="./"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
-            <fileset dir="${dir.jarfile}/bin"/>
+            <fileset dir="${dir.bin}"/>
             <fileset dir="${dir.jarfile}/resources"/>
         </jar>
     </target>
+    
+    <!-- Run tests if JUnit is available -->
+    <target name="run_tests" depends="check_junit,compile_tests" if="junit.available">
+        <echo message="Running chess unit tests..."/>
+        <junit printsummary="yes" haltonfailure="no">
+            <classpath>
+                <pathelement location="${dir.bin}"/>
+                <fileset dir="${dir.test.lib}" includes="**/*.jar"/>
+            </classpath>
+            <formatter type="plain" usefile="false"/>
+            <batchtest>
+                <fileset dir="${dir.test}" includes="**/*Test.java"/>
+            </batchtest>
+        </junit>
+    </target>
+    
+    <!-- Clean build files -->
+    <target name="clean">
+        <delete dir="${dir.bin}"/>
+        <delete file="${dir.jarfile}/chess-java.jar"/>
+    </target>
+    
+    <!-- Build and test -->
+    <target name="build_and_test" depends="create_run_jar,run_tests"/>
 </project>
