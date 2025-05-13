@@ -14,18 +14,22 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class Board extends JPanel implements MouseListener, MouseMotionListener {
 	// Resource location constants for piece images
-    private static final String RESOURCES_WBISHOP_PNG = "wbishop.png";
-	private static final String RESOURCES_BBISHOP_PNG = "bbishop.png";
-	private static final String RESOURCES_WKNIGHT_PNG = "wknight.png";
-	private static final String RESOURCES_BKNIGHT_PNG = "bknight.png";
-	private static final String RESOURCES_WROOK_PNG = "wrook.png";
-	private static final String RESOURCES_BROOK_PNG = "brook.png";
-	private static final String RESOURCES_WKING_PNG = "wking.png";
-	private static final String RESOURCES_BKING_PNG = "bking.png";
-	private static final String RESOURCES_BQUEEN_PNG = "bqueen.png";
-	private static final String RESOURCES_WQUEEN_PNG = "wqueen.png";
-	private static final String RESOURCES_WPAWN_PNG = "wpawn.png";
-	private static final String RESOURCES_BPAWN_PNG = "bpawn.png";
+    private static final String PREFIX_WHITE = "w";
+    private static final String PREFIX_BLACK = "b";
+    private static final String SUFFIX_PNG = ".png";
+    
+    // Piece names as resource identifiers
+    private static final String PIECE_BISHOP = "bishop";
+    private static final String PIECE_KNIGHT = "knight";
+    private static final String PIECE_ROOK = "rook";
+    private static final String PIECE_KING = "king";
+    private static final String PIECE_QUEEN = "queen";
+    private static final String PIECE_PAWN = "pawn";
+    
+    // Board dimensions
+    private static final int BOARD_SIZE = 8;
+    private static final int SQUARE_SIZE = 50;
+    private static final int BOARD_DIMENSION = BOARD_SIZE * SQUARE_SIZE;
     
     // Piece color constants
     private static final int BLACK = 0;
@@ -50,10 +54,10 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     
     public Board(GameWindow g) {
         this.g = g;
-        board = new Square[8][8];
+        board = new Square[BOARD_SIZE][BOARD_SIZE];
         Bpieces = new LinkedList<Piece>();
         Wpieces = new LinkedList<Piece>();
-        setLayout(new GridLayout(8, 8, 0, 0));
+        setLayout(new GridLayout(BOARD_SIZE, BOARD_SIZE, 0, 0));
 
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -61,17 +65,32 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
         initializeSquares();
         initializePieces();
 
-        this.setPreferredSize(new Dimension(400, 400));
-        this.setMaximumSize(new Dimension(400, 400));
-        this.setMinimumSize(this.getPreferredSize());
-        this.setSize(new Dimension(400, 400));
-
+        setDimensions(BOARD_DIMENSION, BOARD_DIMENSION);
         whiteTurn = true;
     }
     
+    /**
+     * Helper method to set consistent dimensions
+     */
+    private void setDimensions(int width, int height) {
+        Dimension dim = new Dimension(width, height);
+        this.setPreferredSize(dim);
+        this.setMaximumSize(dim);
+        this.setMinimumSize(dim);
+        this.setSize(dim);
+    }
+    
+    /**
+     * Helper method to get resource filename for a piece
+     */
+    private String getResourceFilename(String pieceName, int color) {
+        String prefix = (color == WHITE) ? PREFIX_WHITE : PREFIX_BLACK;
+        return prefix + pieceName + SUFFIX_PNG;
+    }
+    
     private void initializeSquares() {
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
                 int squareColor = ((x + y) % 2 == 0) ? 1 : 0;
                 board[x][y] = new Square(this, squareColor, y, x);
                 this.add(board[x][y]);
@@ -96,34 +115,36 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     }
     
     private void initializePawns() {
-        for (int x = 0; x < 8; x++) {
-            board[1][x].put(new Pawn(BLACK, board[1][x], RESOURCES_BPAWN_PNG));
-            board[6][x].put(new Pawn(WHITE, board[6][x], RESOURCES_WPAWN_PNG));
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            board[1][x].put(new Pawn(BLACK, board[1][x], getResourceFilename(PIECE_PAWN, BLACK)));
+            board[6][x].put(new Pawn(WHITE, board[6][x], getResourceFilename(PIECE_PAWN, WHITE)));
         }
     }
     
     private void initializeRoyalPieces() {
         // Queens
-        board[7][3].put(new Queen(WHITE, board[7][3], RESOURCES_WQUEEN_PNG));
-        board[0][3].put(new Queen(BLACK, board[0][3], RESOURCES_BQUEEN_PNG));
+        board[7][3].put(new Queen(WHITE, board[7][3], getResourceFilename(PIECE_QUEEN, WHITE)));
+        board[0][3].put(new Queen(BLACK, board[0][3], getResourceFilename(PIECE_QUEEN, BLACK)));
         
         // Kings
-        board[0][4].put(new King(BLACK, board[0][4], RESOURCES_BKING_PNG));
-        board[7][4].put(new King(WHITE, board[7][4], RESOURCES_WKING_PNG));
+        board[0][4].put(new King(BLACK, board[0][4], getResourceFilename(PIECE_KING, BLACK)));
+        board[7][4].put(new King(WHITE, board[7][4], getResourceFilename(PIECE_KING, WHITE)));
 
         // Rooks
-        placePiecePair(Rook.class, 0, 7, 0, RESOURCES_BROOK_PNG, RESOURCES_WROOK_PNG);
+        placePiecePair(Rook.class, 0, 7, 0, PIECE_ROOK);
         
         // Knights
-        placePiecePair(Knight.class, 1, 6, 0, RESOURCES_BKNIGHT_PNG, RESOURCES_WKNIGHT_PNG);
+        placePiecePair(Knight.class, 1, 6, 0, PIECE_KNIGHT);
         
         // Bishops
-        placePiecePair(Bishop.class, 2, 5, 0, RESOURCES_BBISHOP_PNG, RESOURCES_WBISHOP_PNG);
+        placePiecePair(Bishop.class, 2, 5, 0, PIECE_BISHOP);
     }
     
-    private void placePiecePair(Class<? extends Piece> pieceClass, int col1, int col2, int row, 
-                               String blackResource, String whiteResource) {
+    private void placePiecePair(Class<? extends Piece> pieceClass, int col1, int col2, int row, String pieceName) {
         try {
+            String blackResource = getResourceFilename(pieceName, BLACK);
+            String whiteResource = getResourceFilename(pieceName, WHITE);
+            
             // Black pieces at row 0
             board[row][col1].put(pieceClass.getDeclaredConstructor(int.class, Square.class, String.class)
                 .newInstance(BLACK, board[row][col1], blackResource));
@@ -142,7 +163,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
     
     private void addPiecesToLists() {
         for(int y = 0; y < 2; y++) {
-            for (int x = 0; x < 8; x++) {
+            for (int x = 0; x < BOARD_SIZE; x++) {
                 Bpieces.add(board[y][x].getOccupyingPiece());
                 Wpieces.add(board[7-y][x].getOccupyingPiece());
             }
@@ -190,12 +211,19 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
             movable = cmd.getAllowableSquares(whiteTurn);
         }
     }
+    
+    /**
+     * Gets the square at the current mouse position
+     */
+    private Square getSquareAtPosition(MouseEvent e) {
+        return (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
+    }
 
     @Override
     public void paintComponent(Graphics g) {
         // Paint all squares
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
+        for (int x = 0; x < BOARD_SIZE; x++) {
+            for (int y = 0; y < BOARD_SIZE; y++) {
                 board[y][x].paintComponent(g);
             }
         }
@@ -209,10 +237,8 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
     @Override
     public void mousePressed(MouseEvent e) {
-        currX = e.getX();
-        currY = e.getY();
-
-        Square sq = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
+        updateMousePosition(e);
+        Square sq = getSquareAtPosition(e);
 
         if (sq.isOccupied()) {
             currPiece = sq.getOccupyingPiece();
@@ -224,7 +250,7 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        Square sq = (Square) this.getComponentAt(new Point(e.getX(), e.getY()));
+        Square sq = getSquareAtPosition(e);
 
         if (currPiece != null) {
             if (!isCorrectTurn(currPiece)) return;
@@ -245,11 +271,26 @@ public class Board extends JPanel implements MouseListener, MouseMotionListener 
 
         repaint();
     }
+    
+    /**
+     * Updates the current mouse position, adjusting for piece display offset
+     */
+    private void updateMousePosition(MouseEvent e) {
+        currX = e.getX();
+        currY = e.getY();
+    }
+    
+    /**
+     * Updates the current mouse position, adjusting for piece display offset
+     */
+    private void updateDragPosition(MouseEvent e) {
+        currX = e.getX() - 24;
+        currY = e.getY() - 24;
+    }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        currX = e.getX() - 24;
-        currY = e.getY() - 24;
+        updateDragPosition(e);
         repaint();
     }
 
