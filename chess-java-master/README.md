@@ -18,6 +18,8 @@ The codebase has been refactored to improve code quality and maintainability:
 - Enhanced object-oriented design principles
 - Improved code organization and structure
 - Added comprehensive unit tests for chess piece movement rules
+- Added fallback image handling for tests
+- Updated build process to support testing
 
 These changes maintain the original functionality while making the code more maintainable and easier to understand.
 
@@ -55,25 +57,77 @@ The project includes a comprehensive suite of unit tests to verify the correctne
    - Testing for stalemate scenarios
    - Verifying check avoidance rules
 
-To run the tests, you'll need JUnit 4:
+### Running Tests
 
-1. Download JUnit JAR files:
-   - junit-4.13.2.jar
-   - hamcrest-core-1.3.jar
+To run the tests, you need JUnit 4:
 
-2. Add them to the classpath when compiling and running tests:
+1. Make sure JUnit JAR files are in place:
    ```
-   javac -cp .:./test/lib/junit-4.13.2.jar:./test/lib/hamcrest-core-1.3.jar -d bin src/*.java test/*.java
-   java -cp .:./bin:./test/lib/junit-4.13.2.jar:./test/lib/hamcrest-core-1.3.jar org.junit.runner.JUnitCore [TestClassName]
+   test/lib/junit-4.13.2.jar
+   test/lib/hamcrest-core-1.3.jar
    ```
-   (Use ; instead of : as the path separator on Windows)
 
-## Running
+2. Use the Ant build script to run tests:
+   ```
+   ant -f build.xml run_tests
+   ```
 
-Compile the project into an executable .jar file by running the following ANT build script on the command line. Make sure jar-in-jar-loader.zip in this repository is in the folder.
+3. To download required test dependencies if missing:
+   ```
+   mkdir -p test/lib
+   # On Windows
+   Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar" -OutFile "test/lib/junit-4.13.2.jar"
+   Invoke-WebRequest -Uri "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" -OutFile "test/lib/hamcrest-core-1.3.jar"
+   
+   # On Unix/Linux/MacOS
+   curl -o test/lib/junit-4.13.2.jar "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar"
+   curl -o test/lib/hamcrest-core-1.3.jar "https://repo1.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"
+   ```
 
-```
+## Build and Run Instructions
+
+### Building the Project
+
+Compile the project into an executable .jar file by running the Ant build script:
+
+```bash
+# Build executable jar
 ant -f build.xml
+
+# Build and run tests
+ant -f build.xml build_and_test
+
+# Clean the project
+ant -f build.xml clean
 ```
 
-Then, run the executable .jar file, named _chess-java.jar_ to play.
+### Running the Game
+
+After building, run the executable .jar file:
+
+```bash
+java -jar chess-java.jar
+```
+
+## Project Structure
+
+```
+chess-java-master/
+├── src/                # Source code
+├── resources/          # Game images and resources
+├── test/               # Unit tests
+│   └── lib/            # Test dependencies
+├── bin/                # Compiled classes
+├── build.xml           # Ant build script
+├── CHANGES.md          # Detailed list of changes
+└── README.md           # This file
+```
+
+## Further Improvements
+
+Potential future enhancements:
+- Add en passant and castling special moves
+- Implement a simple chess AI
+- Add game history tracking
+- Add network play capability
+- Improve UI for different screen sizes
