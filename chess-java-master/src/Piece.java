@@ -1,5 +1,3 @@
-
-
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -13,6 +11,12 @@ public abstract class Piece {
     private final int color;
     private Square currentSquare;
     private BufferedImage img;
+    
+    // Direction constants for traversal
+    private static final int UP = 0;
+    private static final int DOWN = 1;
+    private static final int LEFT = 2;
+    private static final int RIGHT = 3;
     
     public Piece(int color, Square initSq, String img_file) {
         this.color = color;
@@ -64,122 +68,119 @@ public abstract class Piece {
         g.drawImage(this.img, x, y, null);
     }
     
-    public int[] getLinearOccupations(Square[][] board, int x, int y) {
-        int lastYabove = 0;
-        int lastXright = 7;
-        int lastYbelow = 7;
-        int lastXleft = 0;
+    /**
+     * Helper method to check for occupations in a given direction
+     * 
+     * @param board The game board
+     * @param x Starting x coordinate
+     * @param y Starting y coordinate
+     * @param direction Direction to check (UP, DOWN, LEFT, RIGHT)
+     * @return The furthest reachable position in that direction
+     */
+    private int findOccupationLimit(Square[][] board, int x, int y, int direction) {
+        int limit;
+        int start, end, step;
+        boolean isVertical = (direction == UP || direction == DOWN);
         
-        for (int i = 0; i < y; i++) {
-            if (board[i][x].isOccupied()) {
-                if (board[i][x].getOccupyingPiece().getColor() != this.color) {
-                    lastYabove = i;
-                } else lastYabove = i + 1;
+        // Set up traversal parameters based on direction
+        switch (direction) {
+            case UP:
+                start = 0;
+                end = y;
+                step = 1;
+                limit = 0;
+                break;
+            case DOWN:
+                start = 7;
+                end = y;
+                step = -1;
+                limit = 7;
+                break;
+            case LEFT:
+                start = 0;
+                end = x;
+                step = 1;
+                limit = 0;
+                break;
+            case RIGHT:
+                start = 7;
+                end = x;
+                step = -1;
+                limit = 7;
+                break;
+            default:
+                return -1; // Invalid direction
+        }
+        
+        // Traverse board in the specified direction
+        for (int i = start; (step > 0) ? i < end : i > end; i += step) {
+            Square square = isVertical ? board[i][x] : board[y][i];
+            
+            if (square.isOccupied()) {
+                if (square.getOccupyingPiece().getColor() != this.color) {
+                    limit = i;
+                } else {
+                    limit = (step > 0) ? i + 1 : i - 1;
+                }
             }
         }
-
-        for (int i = 7; i > y; i--) {
-            if (board[i][x].isOccupied()) {
-                if (board[i][x].getOccupyingPiece().getColor() != this.color) {
-                    lastYbelow = i;
-                } else lastYbelow = i - 1;
-            }
-        }
-
-        for (int i = 0; i < x; i++) {
-            if (board[y][i].isOccupied()) {
-                if (board[y][i].getOccupyingPiece().getColor() != this.color) {
-                    lastXleft = i;
-                } else lastXleft = i + 1;
-            }
-        }
-
-        for (int i = 7; i > x; i--) {
-            if (board[y][i].isOccupied()) {
-                if (board[y][i].getOccupyingPiece().getColor() != this.color) {
-                    lastXright = i;
-                } else lastXright = i - 1;
-            }
-        }
+        
+        return limit;
+    }
+    
+    /**
+     * Finds limits of movement in linear directions (horizontal and vertical)
+     */
+    public int[] getLinearOccupations(Square[][] board, int x, int y) {
+        int lastYabove = findOccupationLimit(board, x, y, UP);
+        int lastYbelow = findOccupationLimit(board, x, y, DOWN);
+        int lastXleft = findOccupationLimit(board, x, y, LEFT);
+        int lastXright = findOccupationLimit(board, x, y, RIGHT);
         
         int[] occups = {lastYabove, lastYbelow, lastXleft, lastXright};
         
         return occups;
     }
     
+    /**
+     * Finds all squares that can be reached diagonally
+     */
     public List<Square> getDiagonalOccupations(Square[][] board, int x, int y) {
         LinkedList<Square> diagOccup = new LinkedList<Square>();
         
-        int xNW = x - 1;
-        int xSW = x - 1;
-        int xNE = x + 1;
-        int xSE = x + 1;
-        int yNW = y - 1;
-        int ySW = y + 1;
-        int yNE = y - 1;
-        int ySE = y + 1;
-        
-        while (xNW >= 0 && yNW >= 0) {
-            if (board[yNW][xNW].isOccupied()) {
-                if (board[yNW][xNW].getOccupyingPiece().getColor() == this.color) {
-                    break;
-                } else {
-                    diagOccup.add(board[yNW][xNW]);
-                    break;
-                }
-            } else {
-                diagOccup.add(board[yNW][xNW]);
-                yNW--;
-                xNW--;
-            }
-        }
-        
-        while (xSW >= 0 && ySW < 8) {
-            if (board[ySW][xSW].isOccupied()) {
-                if (board[ySW][xSW].getOccupyingPiece().getColor() == this.color) {
-                    break;
-                } else {
-                    diagOccup.add(board[ySW][xSW]);
-                    break;
-                }
-            } else {
-                diagOccup.add(board[ySW][xSW]);
-                ySW++;
-                xSW--;
-            }
-        }
-        
-        while (xSE < 8 && ySE < 8) {
-            if (board[ySE][xSE].isOccupied()) {
-                if (board[ySE][xSE].getOccupyingPiece().getColor() == this.color) {
-                    break;
-                } else {
-                    diagOccup.add(board[ySE][xSE]);
-                    break;
-                }
-            } else {
-                diagOccup.add(board[ySE][xSE]);
-                ySE++;
-                xSE++;
-            }
-        }
-        
-        while (xNE < 8 && yNE >= 0) {
-            if (board[yNE][xNE].isOccupied()) {
-                if (board[yNE][xNE].getOccupyingPiece().getColor() == this.color) {
-                    break;
-                } else {
-                    diagOccup.add(board[yNE][xNE]);
-                    break;
-                }
-            } else {
-                diagOccup.add(board[yNE][xNE]);
-                yNE--;
-                xNE++;
-            }
-        }
+        // Collect all reachable squares in each diagonal direction
+        collectDiagonalSquares(board, x, y, -1, -1, diagOccup); // Northwest
+        collectDiagonalSquares(board, x, y, -1, 1, diagOccup);  // Southwest
+        collectDiagonalSquares(board, x, y, 1, 1, diagOccup);   // Southeast
+        collectDiagonalSquares(board, x, y, 1, -1, diagOccup);  // Northeast
         
         return diagOccup;
+    }
+    
+    /**
+     * Helper method to collect squares in a diagonal direction
+     */
+    private void collectDiagonalSquares(Square[][] board, int startX, int startY, 
+                                        int deltaX, int deltaY, List<Square> squares) {
+        int currentX = startX + deltaX;
+        int currentY = startY + deltaY;
+        
+        while (currentX >= 0 && currentX < 8 && currentY >= 0 && currentY < 8) {
+            Square square = board[currentY][currentX];
+            
+            if (square.isOccupied()) {
+                if (square.getOccupyingPiece().getColor() == this.color) {
+                    break;
+                } else {
+                    squares.add(square);
+                    break;
+                }
+            } else {
+                squares.add(square);
+                currentY += deltaY;
+                currentX += deltaX;
+            }
+        }
     }
     
     // No implementation, to be implemented by each subclass
